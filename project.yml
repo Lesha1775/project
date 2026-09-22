@@ -12,3 +12,4 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.laboratory.work.HomePharmacy
       DEVELOPMENT_TEAM: ""
+      GENERATE_INFOPLIST_FILE: YES
