@@ -7,13 +7,13 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode 16.1
-        run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+      - name: Select Xcode 15.4
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -28,25 +28,17 @@ jobs:
                      -sdk iphonesimulator \
                      -configuration Debug \
                      -derivedDataPath build_output \
+                     GENERATE_INFOPLIST_FILE=YES \
                      clean build
 
       - name: Compress App Bundle
         run: |
-          # 1. Находим скомпилированное приложение
+          # Находим .app файл в недрах Xcode 15
           APP_PATH=$(find build_output -name "HomePharmacy.app" -type d | head -n 1)
           echo "App found at: $APP_PATH"
           
-          # 2. Создаем временную чистую папку в корне проекта и копируем туда .app
-          mkdir -p temp_build
-          cp -R "$APP_PATH" ./temp_build/HomePharmacy.app
-          
-          # 3. Заходим в эту папку и архивируем её содержимое
-          cd temp_build
-          zip -r ../HomePharmacy.app.zip HomePharmacy.app
-          
-          # 4. Возвращаемся обратно в корень
-          cd ..
-          rm -rf temp_build
+          # Утилита ditto — это эталонный способ Apple для создания чистых .zip без мусора
+          ditto -c -k --sequesterRsrc "$APP_PATH" ./HomePharmacy.app.zip
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
