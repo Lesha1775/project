@@ -1,0 +1,13 @@
+name: HomePharmacy
+options:
+  bundleIdPrefix: com.laboratory.work
+targets:
+  HomePharmacy:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: HomePharmacy
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.laboratory.work.HomePharmacy
+      DEVELOPMENT_TEAM: ""
