@@ -1,0 +1,39 @@
+name: Build for Appetize
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild -project HomePharmacy.xcodeproj \
+                     -scheme HomePharmacy \
+                     -sdk iphonesimulator \
+                     -configuration Debug \
+                     -derivedDataPath build_output \
+                     clean build
+
+      - name: Compress App Bundle
+        run: |
+          cd build_output/Build/Products/Debug-iphonesimulator
+          zip -r ../../../HomePharmacy.app.zip HomePharmacy.app
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appetize-sim-build
+          path: HomePharmacy.app.zip
