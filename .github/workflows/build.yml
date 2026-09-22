@@ -32,7 +32,10 @@ jobs:
 
       - name: Compress App Bundle
         run: |
-          cd build_output/Build/Products/Debug-iphonesimulator
+          # Находим точное местоположение скомпилированного .app и архивируем его
+          APP_PATH=$(find build_output -name "HomePharmacy.app" -type d | head -n 1)
+          echo "Found app at: $APP_PATH"
+          cd "$(dirname "$APP_PATH")"
           zip -r ../../../HomePharmacy.app.zip HomePharmacy.app
 
       - name: Upload Build Artifact
