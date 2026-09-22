@@ -32,11 +32,13 @@ jobs:
 
       - name: Compress App Bundle
         run: |
-          # Находим точное местоположение скомпилированного .app и архивируем его
+          # Находим .app файл и копируем его прямо в текущую корневую папку
           APP_PATH=$(find build_output -name "HomePharmacy.app" -type d | head -n 1)
-          echo "Found app at: $APP_PATH"
-          cd "$(dirname "$APP_PATH")"
-          zip -r ../../../HomePharmacy.app.zip HomePharmacy.app
+          echo "Копируем приложение из: $APP_PATH"
+          cp -R "$APP_PATH" ./HomePharmacy.app
+          
+          # Архивируем приложение прямо из корня рабочей директории
+          zip -r HomePharmacy.app.zip HomePharmacy.app
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
